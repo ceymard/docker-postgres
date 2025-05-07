@@ -1,13 +1,11 @@
 #!/bin/bash
 
-PG_CRON_VERSION="1.5.2"
-PGSQL_HTTP_VERSION="1.5.0"
-POSTGIS_VERSION="3.3.3"
-ENVVAR_VERSION="1.0.0"
+set -e
 
-apk update
-apk add make clang15 build-base git curl-dev perl libxml2-dev geos-dev proj-dev protobuf-c-dev gdal-dev json-c-dev llvm15
-apk add postgresql-plpython3 libcurl ca-certificates py3-pip libxml2 geos proj protobuf-c gdal json-c
+PG_CRON_VERSION="1.6.5"
+PGSQL_HTTP_VERSION="1.5.0"
+POSTGIS_VERSION="3.5.1"
+ENVVAR_VERSION="1.0.0"
 
 cd /usr/local/share/postgresql/extension/
 ln -sf /usr/share/postgresql/extension/plpython3u* .
@@ -43,5 +41,5 @@ cd postgis-$POSTGIS_VERSION
 
 cd /
 rm -rf /build
-apk del build-base clang15 llvm15 git curl-dev perl libxml2-dev geos-dev proj-dev protobuf-c-dev gdal-dev json-c-dev make
+apk del build-base clang19 llvm19 git curl-dev perl libxml2-dev geos-dev proj-dev protobuf-c-dev gdal-dev json-c-dev make
 rm -f /var/cache/apk/*

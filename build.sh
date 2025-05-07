@@ -1,2 +1,3 @@
 #!/bin/bash
-docker build --progress=plain --rm -t ceymard/postgres-convenient:15.10-alpine .
+branch=$(git branch --show-current)
+docker build --progress=plain --rm -t ceymard/postgres-convenient:$branch .
