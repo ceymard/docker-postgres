@@ -6,7 +6,7 @@ if [ -z "$branch" ]; then
   echo "detached HEAD: check out a branch, its name is the image tag" >&2
   exit 1
 fi
-image=ceymard/postgres-convenient:$branch
+image=${IMAGE:-ceymard/postgres-convenient:$branch}
 
 docker build --progress=plain --rm -t "$image" .
 

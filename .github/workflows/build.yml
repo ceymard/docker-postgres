@@ -1,0 +1,33 @@
+name: build
+
+on:
+  push:
+    branches: ['*-alpine']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: build-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    env:
+      IMAGE: ghcr.io/${{ github.repository_owner }}/postgres-convenient:${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Builds the image and smoke-tests every extension; a failure stops before anything is pushed.
+      - run: ./build.sh
+
+      - name: Push
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          sha_tag="$IMAGE-${GITHUB_SHA::7}"
+          docker tag "$IMAGE" "$sha_tag"
+          docker push "$IMAGE"
+          docker push "$sha_tag"
