@@ -1,0 +1,23 @@
+name: weekly rebuild
+
+# Scheduled workflows only run from the default branch, so this one starts
+# build.yml on each maintained version branch, picking up Alpine security
+# fixes and base image patch updates.
+on:
+  schedule:
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        branch: ['18.7-alpine']
+    steps:
+      - run: gh workflow run build.yml --repo "$GITHUB_REPOSITORY" --ref "${{ matrix.branch }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
