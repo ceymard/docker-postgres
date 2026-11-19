@@ -11,7 +11,7 @@ image=ceymard/postgres-convenient:$branch
 docker build --progress=plain --rm -t "$image" .
 
 # Smoke test: every extension can be created, and postcbor answers a query.
-container=$(docker run -d -e POSTGRES_PASSWORD=test "$image")
+container=$(docker run -d -e POSTGRES_PASSWORD=test -e POSTGRES_DB=app "$image")
 trap 'docker rm -f "$container" >/dev/null' EXIT
 
 for _ in $(seq 60); do
@@ -20,7 +20,7 @@ for _ in $(seq 60); do
   sleep 1
 done
 
-docker exec -i "$container" psql -h 127.0.0.1 -U postgres -v ON_ERROR_STOP=1 <<'SQL'
+docker exec -i "$container" psql -h 127.0.0.1 -U postgres -d app -v ON_ERROR_STOP=1 <<'SQL'
 CREATE EXTENSION pg_cron;
 CREATE EXTENSION http;
 CREATE EXTENSION envvar;
